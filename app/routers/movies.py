@@ -27,3 +27,19 @@ def read_movie(movie_id: int):
     m1 = Movie(id=movie_id, name="Test", rating=1.5)
 
     return m1
+
+
+@router.post("/", status_code=201, response_model=Movie)
+def add_movie(movie: Movie):
+    movie = Movie(**movie.dict())
+    return movie
+
+
+@router.put("/{movie_id}")
+def update_movie(movie_id: int, movie: Movie):
+    return movie
+
+
+@router.delete("/{movie_id}", response_model=int)
+def delete_movie(movie_id):
+    return 1

@@ -1,0 +1,17 @@
+language: python
+  - "3.8"
+
+install:
+  - pip install pipenv
+  - pipenv install
+
+script:
+  - echo "skipping tests..."
+
+deploy:
+  provider: lambda
+  function_name: "movies"
+  region: "eu-central-1"
+  role: "arn:aws:iam::419870347460:role/service-role/movies-role-j9ucmxre"
+  runtime: "python3.8"
+  handler_name: "handler"
