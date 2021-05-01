@@ -2,12 +2,18 @@ language: python
 python: 
   - 3.8
 
+services:
+  - docker
+
 install:
   - pip install pipenv
-  - pipenv install
 
 script:
   - echo "skipping tests..."
+  - pipenv run pip install -r <(pipenv lock -r) --target _build/
+  - mkdir _build/app
+  - cp -R app/* _build/app
+  - zip -r build.zip _build
 
 deploy:
   provider: lambda
@@ -15,4 +21,5 @@ deploy:
   region: "eu-central-1"
   role: "arn:aws:iam::419870347460:role/service-role/movies-role-j9ucmxre"
   runtime: "python3.8"
+  zip: "./build.zip"
   handler_name: "handler"
