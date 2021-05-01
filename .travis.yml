@@ -7,9 +7,11 @@ install:
 
 script:
   - echo "skipping tests..."
+  - mkdir _build
+  - mkdir _build/app
   - pipenv run pip install -r <(pipenv lock -r) --target _build/app
-  - cp -R app/* _build
-  - zip -r build.zip _build
+  - cp -R app/* _build/app
+  - zip -rq build.zip _build
 
 deploy:
   provider: lambda
