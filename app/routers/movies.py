@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException
 
-from app.models import Movie
+from app.models.movies import Movie
 
 router = APIRouter(prefix="/movies", tags=["movies"])
 
