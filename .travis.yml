@@ -2,17 +2,13 @@ language: python
 python: 
   - 3.8
 
-services:
-  - docker
-
 install:
   - pip install pipenv
 
 script:
   - echo "skipping tests..."
-  - pipenv run pip install -r <(pipenv lock -r) --target _build/
-  - mkdir _build/app
-  - cp -R app/* _build/app
+  - pipenv run pip install -r <(pipenv lock -r) --target _build/app
+  - cp -R app/* _build
   - zip -r build.zip _build
 
 deploy:
