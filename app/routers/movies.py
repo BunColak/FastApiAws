@@ -2,16 +2,14 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 
 from app.models.movies import Movie
+from app.db.dynamo import get_movies_table
 
 router = APIRouter(prefix="/movies", tags=["movies"])
 
 
 @router.get("/", response_model=List[Movie])
 def read_movies():
-    m1 = Movie(id=1, name="Test", rating=1.5)
-    m2 = Movie(id=2, name="Test 2", rating=4.5)
-
-    return [m1, m2]
+    return get_movies_table().scan()["Items"]
 
 
 @router.get(
@@ -20,18 +18,20 @@ def read_movies():
     responses={404: {"description": "Movie not found"}},
 )
 def read_movie(movie_id: int):
-    if movie_id > 5:
-        raise HTTPException(
-            status_code=404,
-        )
-    m1 = Movie(id=movie_id, name="Test", rating=1.5)
-
-    return m1
+    movie = get_movies_table().get_item(Key={"id": movie_id})
+    if "Item" in movie:
+        return movie["Item"]
+    else:
+        raise HTTPException(status_code=404)
 
 
 @router.post("/", status_code=201, response_model=Movie)
 def add_movie(movie: Movie):
     movie = Movie(**movie.dict())
+
+    table = get_movies_table()
+    table.put_item(Item={**movie.dict()})
+
     return movie
 
 
