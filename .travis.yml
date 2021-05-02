@@ -21,4 +21,4 @@ deploy:
   role: "arn:aws:iam::419870347460:role/service-role/movies-role-j9ucmxre"
   runtime: "python3.8"
   zip: "./build.zip"
-  handler_name: "handler"
+  handler_name: "app.main.handler"

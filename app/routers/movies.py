@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import List
 from fastapi import APIRouter, HTTPException
 
@@ -35,9 +36,17 @@ def add_movie(movie: Movie):
     return movie
 
 
-@router.put("/{movie_id}")
-def update_movie(movie_id: int, movie: Movie):
-    return movie
+@router.put("/{movie_id}", response_model=Movie)
+def update_movie(movie_id: int, rating: Decimal):
+    try:
+        return get_movies_table().update_item(
+            Key={"id": movie_id},
+            UpdateExpression="set rating=:r",
+            ExpressionAttributeValues={":r": rating},
+            ReturnValues="ALL_NEW",
+        )["Attributes"]
+    except Exception as e:
+        raise HTTPException(404)
 
 
 @router.delete("/{movie_id}", response_model=int)
